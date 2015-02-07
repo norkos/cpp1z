@@ -1,5 +1,6 @@
 PROJECT(cpp_learning)
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+SET(CMAKE_CXX_FLAGS "-g -Wall -Werror -std=c++1y")
 
 ADD_SUBDIRECTORY (gtest-1.7.0)
 
