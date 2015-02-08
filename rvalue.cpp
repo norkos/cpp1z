@@ -1,7 +1,8 @@
 #include "gtest/gtest.h"
 #include <iostream>
 #include <memory>
-#include <boost/concept_check.hpp>
+
+namespace rvalue {
 
 struct B{ 
     int x;
@@ -57,6 +58,8 @@ TEST(RVALUE_TEST, check_move) {
     EXPECT_EQ(value, v2[0]->x);
 }
 
+////////////////////////
+
 template <typename T, typename Arg>
 std::shared_ptr<T> factory(Arg&& arg){
     return std::make_shared<T>(std::forward<Arg>(arg));
@@ -77,6 +80,8 @@ TEST(RVALUE_TEST, perfect_forwarding) {
     EXPECT_EQ(value, p->x);
     EXPECT_EQ(value, q->x);
 }
+
+////////////////////////
 
 // http://stackoverflow.com/questions/8610571/what-is-rvalue-reference-for-this
 struct LocalContainter{
@@ -121,3 +126,6 @@ TEST(RVALUE_TEST, rvalue_this) {
     //  then
     ASSERT_EQ(r_value, result);
 }
+
+}// namespace
+
