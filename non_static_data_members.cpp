@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
-#include <boost/concept_check.hpp>
 
-namespace non_static_data_member {
+namespace {
 
 const int GLOBAL_INT = 5;
 

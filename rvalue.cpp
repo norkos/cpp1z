@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 
-namespace rvalue {
+namespace {
 
 struct B{ 
     int x;
