@@ -15,7 +15,7 @@ T adder(T first, Args... args){
     return first + adder(args...);
 }
 
-TEST(RVALUE_TEST, check_simple_adder) {
+TEST(VARIADIC_TEMPLATE, check_simple_adder) {
     //  given
     int a = 1;
     int b = 2;
@@ -44,7 +44,7 @@ bool are_pairs(T&a, K&b, Args... args){
     return are_pairs(args...);
 }
 
-TEST(RVALUE_TEST, check_pars) {
+TEST(VARIADIC_TEMPLATE, check_pars) {
     //  given
     int a = 1;
     int b = 2;
@@ -58,7 +58,7 @@ TEST(RVALUE_TEST, check_pars) {
     ASSERT_TRUE(is_pair);
 }
 
-TEST(RVALUE_TEST, check_not_pars) {
+TEST(VARIADIC_TEMPLATE, check_not_pars) {
     //  given
     int a = 1;
     std::string c ="c";
@@ -77,9 +77,9 @@ template <class... Ts> struct tuple{};
 template <class T, class... Ts>
 struct tuple<T, Ts...>: tuple<Ts...>{
     tuple(T t, Ts... ts) :
-        tuple<Ts...>(ts...), tail(t) 
+        tuple<Ts...>(ts...), head(t) 
         {}
-    T tail;
+    T head;
 };
 
 template <std::size_t k,  class T> 
@@ -98,17 +98,17 @@ struct elem_type_holder<k, tuple<T, Ts...>> {
 template <std::size_t k, class... Ts>
 std::enable_if_t<k == 0, typename elem_type_holder<0, tuple<Ts...>>::type&>
 get(tuple<Ts...>& t){
-    return t.tail;
+    return t.head;
 }
 
 template <std::size_t k, class T, class... Ts>
 std::enable_if_t<k != 0, typename elem_type_holder<k, tuple<T, Ts...>>::type&>
-get(tuple<T, Ts...>&t){
-    tuple<Ts...>& base =t;
+get(tuple<T, Ts...>&head){
+    tuple<Ts...>& base = head;
     return get<k-1>(base);
 }
 
-TEST(RVALUE_TEST, check_tuple) {
+TEST(VARIADIC_TEMPLATE, check_tuple) {
     //  given
     int a = 2;
     double b = 3.0;
