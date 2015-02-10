@@ -72,40 +72,40 @@ TEST(VARIADIC_TEMPLATE, check_not_pars) {
 }
 
 /** Maybe Tuple ? */
-template <class... Ts> struct tuple{};
+template<class... Ts>
+struct tuple {};
 
 template <class T, class... Ts>
-struct tuple<T, Ts...>: tuple<Ts...>{
-    tuple(T t, Ts... ts) :
-        tuple<Ts...>(ts...), head(t) 
-        {}
+struct tuple<T, Ts...> : tuple<Ts...> {
+    tuple(T t, Ts... ts) : tuple<Ts...>(ts...), head(t) {}
     T head;
 };
 
-template <std::size_t k,  class T> 
-struct elem_type_holder {};
+template <std::size_t k, class T>
+struct elem_type_holder{
+};
 
 template <class T, class... Ts>
-struct elem_type_holder<0, tuple<T, Ts...>> {
-  typedef T type;
+struct elem_type_holder<0, tuple<T, Ts...>>{
+    typedef T type;
 };
 
 template <std::size_t k, class T, class... Ts>
-struct elem_type_holder<k, tuple<T, Ts...>> {
-  typedef typename elem_type_holder<k - 1, tuple<Ts...>>::type type;
+struct elem_type_holder<k, tuple<T, Ts...>>{
+    typedef typename elem_type_holder<k-1, tuple<Ts...>>::type type;
 };
 
-template <std::size_t k, class... Ts>
+template<std::size_t k, class... Ts>
 std::enable_if_t<k == 0, typename elem_type_holder<0, tuple<Ts...>>::type&>
-get(tuple<Ts...>& t){
+get(tuple<Ts...> &t){
     return t.head;
 }
-
-template <std::size_t k, class T, class... Ts>
+ 
+template<std::size_t k, class T, class... Ts>
 std::enable_if_t<k != 0, typename elem_type_holder<k, tuple<T, Ts...>>::type&>
-get(tuple<T, Ts...>&head){
-    tuple<Ts...>& base = head;
-    return get<k-1>(base);
+get(tuple<T, Ts...> &head){
+    tuple<Ts...>& tail = head;
+    return get<k-1>(tail);
 }
 
 TEST(VARIADIC_TEMPLATE, check_tuple) {
