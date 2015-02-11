@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include <iostream>
+#include <memory>
 
 namespace {
 
@@ -121,6 +122,78 @@ TEST(VARIADIC_TEMPLATE, check_tuple) {
     ASSERT_EQ(a, get<0>(result));
     EXPECT_DOUBLE_EQ(b, get<1>(result));
     ASSERT_EQ(c, get<2>(result));
+}
+
+///////////////////////////
+
+//  SUM values
+template <template <typename, typename...> class MyContainer,
+    typename Value, typename... Alloc>
+Value sum(const MyContainer<Value, Alloc...> & container){
+    Value result = 0;
+    for(const auto& v : container){
+        result += v;
+    }
+    return result;
+}
+
+TEST(VARIADIC_TEMPLATE, check_sum_vector) {
+    //  given
+    int a = 2;
+    int b = 4;
+    
+    //  when
+    std::vector<int> my_vector{a,b};
+    int vector_sum = sum(my_vector);
+    
+    //  then
+    ASSERT_EQ(a+b, vector_sum);
+}
+
+TEST(VARIADIC_TEMPLATE, check_sum_set) {
+    //  given
+    int a = 2;
+    int b = 4;
+    
+    //  when
+    std::set<int> my_set{a,b};
+    int set_sum = sum(my_set);
+    
+    //  then
+    ASSERT_EQ(a+b, set_sum);
+}
+
+//////////////////////// perfect_forwarding
+
+struct B{ 
+    int x;
+    B(int x):x(x){} 
+};
+
+struct A{ 
+    int x;
+    int y;
+    A(B& b, B& c):x(b.x), y(c.x){} 
+    A(B&& b, B&& c):x(b.x), y(c.x){} 
+};
+
+
+template <typename T, typename... Arg>
+std::shared_ptr<T> factory(Arg&&... arg){
+    return std::make_shared<T>(std::forward<Arg>(arg)...);
+}
+
+TEST(VARIADIC_TEMPLATE, perfect_forwarding) {
+    //  given
+    int a = 10;
+    int b = 5;
+    
+    //  when
+    std::shared_ptr<A> p = factory<A>(B(a), B(b)); /** fast forward */
+
+    //  then
+    EXPECT_EQ(a, p->x);
+    EXPECT_EQ(b, p->y);
 }
 
 } // namespace
