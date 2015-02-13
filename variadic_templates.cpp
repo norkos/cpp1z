@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include <iostream>
 #include <memory>
+#include <type_traits>
 
 namespace {
 
@@ -130,7 +131,9 @@ TEST(VARIADIC_TEMPLATE, check_tuple) {
 template <template <typename, typename...> class MyContainer,
     typename Value, typename... Alloc>
 Value sum(const MyContainer<Value, Alloc...> & container){
-    Value result = 0;
+    static_assert(std::is_arithmetic<Value>::value,
+                      "Implementation error: this specialization intended for scalars only");
+    Value result = Value();
     for(const auto& v : container){
         result += v;
     }
