@@ -173,7 +173,6 @@ struct B{
 struct A{ 
     int x;
     int y;
-    A(B& b, B& c):x(b.x), y(c.x){} 
     A(B&& b, B&& c):x(b.x), y(c.x){} 
 };
 
